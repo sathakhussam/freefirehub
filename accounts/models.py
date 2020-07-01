@@ -6,18 +6,21 @@ from phonenumber_field.modelfields import PhoneNumberField
 
 
 class MyUserManager(BaseUserManager):
-    def create_user(self, email,phone, password=None):
+    def create_user(self, email,username, phone, password=None):
         """
         Creates and saves a User with the given email, date of
         birth and password.
         """
         if not email:
             raise ValueError('Users must have an email address')
+        if not username:
+            raise ValueError('Users must have an username')
         if not phone:
             raise ValueError('Users must have an phone number')
 
         user = self.model(
             email=self.normalize_email(email),
+            username=username,
             phone=phone
         )
 
@@ -25,13 +28,14 @@ class MyUserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, email, phone, password=None):
+    def create_superuser(self,username, email, phone, password=None):
         """
         Creates and saves a superuser with the given email, date of
         birth and password.
         """
         user = self.create_user(
             email,
+            username=username,
             password=password,
             phone=phone
         )
@@ -46,17 +50,18 @@ class MyUser(AbstractBaseUser):
         max_length=255,
         unique=True,
     )
+    username = models.CharField(max_length=264, unique=True)
     phone = models.BigIntegerField(unique=True)
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
 
     objects = MyUserManager()
 
-    USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['phone']
+    USERNAME_FIELD = 'username'
+    REQUIRED_FIELDS = ['email','phone']
 
     def __str__(self):
-        return self.email
+        return self.username
 
     def has_perm(self, perm, obj=None):
         "Does the user have a specific permission?"

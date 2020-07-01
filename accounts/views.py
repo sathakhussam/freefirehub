@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import login_required
 from listings.models import Listing, Sale
 from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
+from .forms import registration
 # Create your views here.
 
 
@@ -22,18 +23,13 @@ def login(requests):
 
 
 def register(requests):
-	print(requests.user)
+	form = registration()
 	if requests.method == 'POST':
-		email = requests.POST['email']
-		number = requests.POST['phone-num']
-		password1 = requests.POST['password-1']
-		print(password1)
-		password2 = requests.POST['password-2']
-		listing = MyUser(email=email, phone=number)
-		listing.set_password(raw_password=password1)
-		listing.save()
-	context = {}
-	return render(requests, 'accounts/register.html')
+		form = registration(requests.POST)
+		if form.is_valid():
+			form.save()
+	context = {'form':form}
+	return render(requests, 'accounts/register.html',context)
 
 @login_required	
 def dashboard(requests):
@@ -46,7 +42,7 @@ def dashboard(requests):
 	return render(requests, 'accounts/dashboard.html', context)
 @login_required
 def Mylogout(requests):
-	if user.is_authenticated():
+	if requests.user.is_authenticated():
 		logout(requests)
 	return redirect('home')
 	
