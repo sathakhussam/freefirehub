@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% load listings_extras %}
+{% block title %}
+{% endblock %}
+{% block body %}
+<h1>Listing</h1>
+{% if listing %}
+    <img src="{{ listing.photo_main.url }}" alt="">
+    <h2>Price : ${{ listing.price }}</h2>
+    <h3>Seller : {{ listing.seller_user }}</h3>
+    <h4>Account Level : {{ listing.level}}</h4>
+    <h4>Account ID: {{ listing.freefire_id|sliceindice:3 }}*******</h4>
+    <h4>Username: {{ listing.username|sliceindice:3}}**********</h4>
+    <h5>Description : {{ listing.description}}</h5>
+    <button><a href="{% url 'listing_buy' listing.pk %}">Buy Now!</a></button>
+{% else %}
+    <h4>Sorry, The listing is not published!</h4>
+{% endif %}
+{% endblock %}

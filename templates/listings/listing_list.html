@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block title%}
+<title>Listings</title>
+{% endblock%}
+{% block body%}
+<h1>Listings</h1>
+{% if listings%}
+	{% for list in listings %}
+		<div>
+			<img src="{{ list.photo_main.url }}" alt="" style="height: 75px;">
+			<h3>{{ list.seller_user }}</h3>
+			<h3>Level : {{ list.level}}</h3>
+			<h3>Price : ${{ list.price }}</h3>
+			<a href="{% url 'listing' list.id %}">More Info</a>
+		</div>
+	{% endfor %}
+{% endif %}
+{% endblock%}

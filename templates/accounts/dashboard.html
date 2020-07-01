@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% block title %}
+<title>Dashboard</title>
+{% endblock %}
+{% block body %}
+<h1>Dashboard</h1>
+{% if listings %}
+    <table border="1">
+        <tr>
+            <th>Freefire-ID</th>
+            <th>Price</th>
+            <th>Estimated-Price</th>
+            <th>Published</th>
+            <th>Sold</th>
+            <th>Update</th>
+            <th>Delete</th>
+        </tr>
+    {% for list in listings %}
+        <tr>
+            <td>{{list.freefire_id}}</td>
+            <td>{{list.price}}</td>
+            <td>{{list.estimated_price}}</td>
+            <td>{{list.is_published}}</td>
+            <td>{{list.is_sold}}</td>
+            <td><a href="{% url 'listing_update' list.pk %}">Update</a></td>
+            <td><a href="{% url 'listing_delete' list.pk %}">Delete</a></td>
+        </tr>
+    {% endfor%}
+    </table>
+{% else %}
+<h3>Sorry! you dont have any listings</h3>
+{% endif %}
+{% if sales %}
+<table border="1">
+    <tr>
+        <th>Listing</th>
+        <th>Price</th>
+        <th>View</th>
+    </tr>
+{% for sale in sales %}
+    <tr>
+        <td>{{ sale.ListingAcc}}</td>
+        <td>{{sale.ListingAcc.price}}</td>
+        <td><a href="#">View</a></td>
+    </tr>
+{% endfor%}
+</table>
+{% else %}
+<h3>Sorry you don't have bought anything </h3>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block title %}
+{% endblock %}
+{% block body %}
+<h1>Do you really want to delete this listing?</h1>
+<form method="POST">
+    {% csrf_token %}
+    <label >Yes : <input type="radio" name="decision" value='yes'></label>
+    <label >No : <input type="radio" name="decision" value='no'></label>
+    <div><input type="submit" value="Delete Now!"></div>
+</form>
+{% endblock %}
