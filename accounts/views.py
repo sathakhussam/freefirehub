@@ -6,19 +6,23 @@ from django.contrib.auth.decorators import login_required
 from listings.models import Listing, Sale
 from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
-from .forms import registration
+from .forms import registration,loginform
 # Create your views here.
 
 
 
 def login(requests):
+	form = loginform()
 	if requests.method == 'POST':
-		email = requests.POST['email']
-		password = requests.POST['password']
-		user = authenticate(email=email, password=password)
-		login_dj(requests,user=user)
-		return redirect('dashboard')
-	return render(requests, 'accounts/login.html')
+		form = loginform(requests.POST)
+		if form.is_valid():
+			username = form.cleaned_data['username']
+			password = form.cleaned_data['password']
+			user = authenticate(username=username, password=password)
+			login_dj(requests, user=user)
+			return redirect('dashboard')
+	
+	return render(requests, 'accounts/login.html', {'form':form})
 
 
 
@@ -27,7 +31,10 @@ def register(requests):
 	if requests.method == 'POST':
 		form = registration(requests.POST)
 		if form.is_valid():
-			form.save()
+			user = form.save(commit=False)
+			user.set_password(user.password)
+			user.set_username(user.username)
+			user.save()
 	context = {'form':form}
 	return render(requests, 'accounts/register.html',context)
 

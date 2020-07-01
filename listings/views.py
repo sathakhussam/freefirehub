@@ -3,9 +3,11 @@ from django.contrib.auth import authenticate
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login as login_dj, logout
 from listings.models import Listing, Sale
+from accounts.models import MyUser
 from . import models
 from . import forms
 from django.http import HttpResponseRedirect
+import stripe
 
 # Create your views here.
 
@@ -76,7 +78,10 @@ def listings_deleteview(requests, list_id):
         return render(requests, 'listings/listing_delete.html')
 @login_required
 def listings_buy(requests, list_id):
+    # stripe payments
+    # stripe private key 
     obj = get_object_or_404(Listing, id=list_id)
+    print(requests.user.username)
     if obj.seller_user != requests.user:
         context = {'listing':obj}
         return render(requests, 'listings/listing_buy.html',context)
@@ -85,6 +90,16 @@ def listings_buy(requests, list_id):
 @login_required
 def confirm_buy(requests, list_id):
     obj = get_object_or_404(Listing, id=list_id)
+    
+    stripe.api_key = "sk_test_51H05nvDAVogauJQRhh2BxE3LcdBv8Xwjs3HGUgX7s7CPDIuZ4Dptxg5NZfdVROJ10vT4WvLuO7Vc4AsUPdCN0ClR001dvdIa9f"
+    if requests.method == 'POST':
+
+            customer = stripe.Customer.create(
+            email=requests.user.email,
+            phone=requests.user.phone,
+            source=requests.POST['stripeToken']
+        )
+            charge = stripe.Charge.create(customer=customer, amount=int(obj.price)*100, currency='inr', description=obj,)
     sales = Sale()
     sales.ListingAcc = obj
     sales.customer_user = requests.user

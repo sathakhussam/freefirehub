@@ -10,3 +10,7 @@ class registration(forms.ModelForm):
         if self.password!=self.password_confirm:
             raise forms.ValidationError('Both Passwords must match!')
         return self.password
+    
+class loginform(forms.Form):
+    username = forms.CharField()
+    password = forms.CharField(widget=forms.PasswordInput)

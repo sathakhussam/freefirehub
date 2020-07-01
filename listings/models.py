@@ -3,6 +3,7 @@ from accounts.models import MyUser
 from django.core.validators import RegexValidator
 import os
 from datetime import datetime
+from django.utils import timezone
 
 
 
@@ -49,9 +50,9 @@ class Listing(models.Model):
 		
 
 class Sale(models.Model):
-	ListingAcc = models.ForeignKey(Listing, on_delete=models.SET_NULL, null=True)
+	ListingAcc = models.ForeignKey(Listing, on_delete=models.SET_NULL, null=True, unique=True)
 	customer_user = models.ForeignKey(MyUser, on_delete=models.SET_NULL, null=True)
-	purchased_date = models.DateTimeField(default=datetime.now)
+	purchased_date = models.DateTimeField(default=timezone.now)
 	def __str__(self):
 		return f'{self.ListingAcc} ({self.customer_user})'
 		
