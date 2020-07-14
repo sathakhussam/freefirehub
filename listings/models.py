@@ -6,17 +6,9 @@ from datetime import datetime
 from django.utils import timezone
 
 
-
-# def user_directory_path(instance, filename):
-#     # file will be uploaded to MEDIA_ROOT/user_<id>/<filename>
-#     return 'user_{0}/{1}'.format(instance.user.id, filename)
-
-# class MyModel(models.Model):
-#     upload = models.FileField(upload_to=user_directory_path)
-# Create your models here.
 def get_upload_path(instance, filename):
-	if not os.path.exists(f'{instance.seller_user}/{instance.username}/{filename}'):
-		os.makedirs(f'{instance.seller_user}/{instance.username}/{filename}')
+	# if not os.path.exists(f'{instance.seller_user}/{instance.username}/{filename}'):
+	# 	os.makedirs(f'{instance.seller_user}/{instance.username}/{filename}')
 	return f'{instance.seller_user}/{instance.username}/{filename}'
 class Listing(models.Model):
 	
@@ -36,13 +28,7 @@ class Listing(models.Model):
 
 
 	photo_main = models.ImageField(upload_to=get_upload_path,)
-	photo_1 = models.ImageField(upload_to=get_upload_path, blank=True)
-	photo_2 = models.ImageField(upload_to=get_upload_path, blank=True)
-	photo_3 = models.ImageField(upload_to=get_upload_path, blank=True)
-	photo_4 = models.ImageField(upload_to=get_upload_path, blank=True)
-	photo_5 = models.ImageField(upload_to=get_upload_path, blank=True)
-	photo_6 = models.ImageField(upload_to=get_upload_path, blank=True)
-	photo_7 = models.ImageField(upload_to=get_upload_path, blank=True)
+	video_main = models.FileField(upload_to=get_upload_path)
 	posted_date = models.DateTimeField(default=datetime.now)
 	def __str__(self):
 		return f"{self.freefire_id} ({self.estimated_price})"
@@ -50,9 +36,14 @@ class Listing(models.Model):
 		
 
 class Sale(models.Model):
+	transaction_id = models.CharField(max_length=55,unique=True)
 	ListingAcc = models.ForeignKey(Listing, on_delete=models.SET_NULL, null=True, unique=True)
 	customer_user = models.ForeignKey(MyUser, on_delete=models.SET_NULL, null=True)
 	purchased_date = models.DateTimeField(default=timezone.now)
 	def __str__(self):
 		return f'{self.ListingAcc} ({self.customer_user})'
+
+class TempStorage(models.Model):
+	transaction_id = models.CharField(max_length=55,unique=True)
+	buyer = models.ForeignKey(MyUser, on_delete=models.SET_NULL, null=True)
 		

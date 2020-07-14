@@ -3,4 +3,8 @@ from listings.models import Listing
 class create_listing(forms.ModelForm):
     class Meta():
         model = Listing
-        fields = ['freefire_id','username','level', 'description', 'estimated_price','signed_up_with', 'account_email','account_password','photo_main','photo_1','photo_2','photo_3','photo_4','photo_5','photo_6','photo_7']
+        fields = ['freefire_id','username','level', 'description', 'estimated_price','signed_up_with', 'account_email','account_password','photo_main','video_main']
+        widget = {
+            'video_main': forms.FileInput(attrs={'accept': 'video/*'}),
+            'photo_main': forms.FileInput(attrs={'class':'sample','accept': 'image/*'})
+        }
