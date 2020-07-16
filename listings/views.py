@@ -131,47 +131,17 @@ def listings_buy(requests, list_id):
 def confirm_buy(requests, list_id):
     obj = get_object_or_404(Listing, id=list_id)
     # print(obj.price)
-    order_id = randint(10000000000000000000000000000000000000000000000000,99999999999999999999999999999999999999999999999999)
-    param_dict =  {
-        'MID': 'icrDtJ34978828642501',
-        'ORDER_ID': str(order_id),
-        'TXN_AMOUNT': str(obj.price),
-        'CUST_ID': requests.user.email,
-        'INDUSTRY_TYPE_ID': 'Retail',
-        'WEBSITE': 'WEBSTAGING',
-        'CHANNEL_ID': 'WEB',
-        'CALLBACK_URL':f'http://127.0.0.1:8000/listings/handlerequests/{list_id}'
-    }
-    print(order_id)
-    param_dict['CHECKSUMHASH'] = checksum.generate_checksum(param_dict, MERCHANT_KEY)
-    temp_storage = models.TempStorage(transaction_id=order_id,buyer=requests.user)
-    temp_storage.save()
-    return render(requests, 'listings/paytm.html', {'param_dict':param_dict})
+    form = forms.paymentsabout()
+    if requests.method == 'POST':
+        form = forms.paymentsabout(requests.POST)
+        if form.is_valid():
+            form.save(commit=False)
+            # print(dir(form.cleaned_data['customer_user']))
+            modelss = models.PaymentsStore(customer_user=requests.user,ListingAcc=obj,phone_num=form.cleaned_data['phone_num'],order_id=form.cleaned_data['order_id'],price=form.cleaned_data['price'])
+            modelss.save()
+            temp_storage = models.TempStorage(transaction_id=form.cleaned_data['order_id'],buyer=requests.user)
+            temp_storage.save()
 
-# @login_required
-@csrf_exempt
-def handle_requests(requests,list_id):
-        # paytm will send you post request here
-    form = requests.POST
-    # print(form)
-    response_dict = {}
-    for i in form.keys():
-        response_dict[i] = form[i]
-        if i == 'CHECKSUMHASH':
-            checksums = form[i]
-
-    verify = checksum.verify_checksum(response_dict, MERCHANT_KEY, checksums)
-    if verify:
-        if response_dict['RESPCODE'] == '01':
-            print('order successful')
-            temp_storage = get_object_or_404(models.TempStorage,transaction_id=form['ORDERID'])
-            # print(temp_storage.buyer)
-            login_dj(requests,temp_storage.buyer)
-            obj = get_object_or_404(Listing, id=list_id)
-            sale_process = Sale(transaction_id=form['ORDERID'],ListingAcc=obj,customer_user=temp_storage.buyer)
-            sale_process.save()
-            obj.is_sold=True
-            obj.save()
             # to client 
             subject = 'Thanks For Buying In Our Website'
             message = f"Here's where you will find your newly bought account password and email.\n https://www.freefirehub.ga/listings/{obj.id} \n the account will be revisionised and secured for you"
@@ -180,7 +150,7 @@ def handle_requests(requests,list_id):
             send_mail( subject, message, email_from, recipient_list )
             # to buyer 
             subject = 'Your Account Has Been Sold Your Money Will Be Provided Soon'
-            message = f"Your account has been bought just now and you will recieve your money as soon as your account is verified."
+            message = f"Your account has been bought just now for {obj.price} and you will recieve your money as soon as your account is verified."
             email_from = settings.EMAIL_HOST_USER
             print(obj.seller_user.email)
             recipient_list = str(obj.seller_user.email)
@@ -191,6 +161,4 @@ def handle_requests(requests,list_id):
             email_from = settings.EMAIL_HOST_USER
             recipient_list = ['sathakhussam@gmail.com',]
             send_mail( subject, message, email_from, recipient_list )
-        else:
-            print('order was not successful because' + response_dict['RESPMSG'])
-    return render(requests, 'listings/paymentstatus.html', {'response': response_dict})
+    return render(requests, 'listings/paytm.html', {'form':form})

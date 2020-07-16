@@ -1,5 +1,5 @@
 from django import forms
-from listings.models import Listing
+from listings.models import Listing,PaymentsStore
 class create_listing(forms.ModelForm):
     class Meta():
         model = Listing
@@ -8,3 +8,7 @@ class create_listing(forms.ModelForm):
             'video_main': forms.FileInput(attrs={'accept': 'video/*'}),
             'photo_main': forms.FileInput(attrs={'class':'sample','accept': 'image/*'})
         }
+class paymentsabout(forms.ModelForm):
+    class Meta():
+        model = PaymentsStore
+        fields = ['phone_num', 'order_id', 'price']

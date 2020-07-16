@@ -11,7 +11,6 @@ def get_upload_path(instance, filename):
 	# 	os.makedirs(f'{instance.seller_user}/{instance.username}/{filename}')
 	return f'{instance.seller_user}/{instance.username}/{filename}'
 class Listing(models.Model):
-	
 	seller_user = models.ForeignKey(MyUser, on_delete=models.SET_NULL, null=True)
 	freefire_id = models.BigIntegerField(unique=True, validators=[])
 	level = models.PositiveIntegerField(validators=[])
@@ -43,6 +42,12 @@ class Sale(models.Model):
 	def __str__(self):
 		return f'{self.ListingAcc} ({self.customer_user})'
 
+class PaymentsStore(models.Model):
+	customer_user = models.ForeignKey(MyUser, on_delete=models.SET_NULL, null=True, unique=True)
+	ListingAcc = models.ForeignKey(Listing, on_delete=models.SET_NULL, null=True, unique=True)
+	phone_num = models.BigIntegerField()
+	order_id = models.CharField(max_length=100,unique=True)
+	price = models.IntegerField()
 class TempStorage(models.Model):
 	transaction_id = models.CharField(max_length=55,unique=True)
 	buyer = models.ForeignKey(MyUser, on_delete=models.SET_NULL, null=True)

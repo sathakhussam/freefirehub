@@ -25,7 +25,7 @@ SECRET_KEY = 'e8k$%1y&e%09llgdahn7ef&cf6j)c-m#lb_9hw^y-0t5qx(u!c'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '[::1]']
 
 
 # Application definition
@@ -141,3 +141,8 @@ EMAIL_USE_TLS = True
 EMAIL_PORT = 587
 EMAIL_HOST_USER = "freefirehubassociate@gmail.com"
 EMAIL_HOST_PASSWORD = "USajMm13jul"
+
+# # deploy measures
+# SESSION_COOKIE_SECURE = True
+# CSRF_COOKIE_SECURE = True
+# SECURE_REFERRER_POLICY = True

@@ -9,5 +9,4 @@ urlpatterns = [
 	path('update/<int:list_id>/', views.listings_updateview, name='listing_update'),
 	path('delete/<int:list_id>/', views.listings_deleteview, name='listing_delete'),
 	path('delete/confirm/<int:list_id>/', views.listings_confirmdeleteview, name='listing_confirmdelete'),
-	path('handlerequests/<int:list_id>', views.handle_requests, name='handle_requests'),
 ]

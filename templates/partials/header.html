@@ -4,6 +4,7 @@
         <div class="logo">
             <a href="{% url 'home' %}">
                 <h1>FreeFireHub</h1>
+                
             </a>
 
         </div>
@@ -30,7 +31,7 @@
                             <li><a href="{% url 'about' %}"">About</a></li>
                             <li><a href="{% url 'listings' %}">Listings</a>
                             </li>
-                            <li><a href="contact.html">Contact</a>
+                            <!-- <li><a href="contact.html">Contact</a> -->
                             {% if user.is_authenticated %}
                             <li><a href="{% url 'logout' %}">Logout</a></li>
                             <li><a href="{% url 'dashboard' %}">Dashboard</a></li>
@@ -45,11 +46,10 @@
                 <div class="hidden-xs">
                     <div class="menu-social-media">
                         <ul>
-                           <li><a href="#"><i class="iconmoon-facebook"></i></a></li>
-                           <li><a href="#"><i class="iconmoon-twitter"></i></a></li>
-                           <li><a href="#"><i class="iconmoon-dribbble3"></i></a></li>
-                           <li><a href="#"><i class="iconmoon-pinterest"></i></a></li>
-                           <li><a href="#"><i class="iconmoon-linkedin2"></i></a></li>
+                           <li><a href="https://www.facebook.com/Free-Fire-Hub-106476461146908"><i class="iconmoon-facebook"></i></a></li>
+                           <li><a href="https://twitter.com/freefirehub1"><i class="iconmoon-twitter"></i></a></li>
+                           <li><a href="https://in.pinterest.com/freefirehubassociate"><i class="iconmoon-pinterest"></i></a></li>
+                           <li><a href="https://instagram.com/free_firehub"><i class="iconmoon-instagram"></i></a></li>
                         </ul>
                     </div>
 
@@ -63,6 +63,5 @@
             </div>
         </div>
         <!-- End of Menu Hamburger (Default) -->
-<hr width="100%">
     </div>
 </div>
